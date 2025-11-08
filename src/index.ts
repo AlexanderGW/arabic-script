@@ -3,32 +3,23 @@ type ArabicCharacter = {
     b?: string;
     m?: string;
     e?: string;
+    d?: boolean;
 };
 
 // POMIL-003170
 
-// const characters = [
-// 	'ا', 'ب', 'ت', 'ث', 'ج',
-// 	'ح', 'خ', 'د', 'ذ', 'ر',
-// 	'ز', 'س', 'ش', 'ص', 'ض',
-// 	'ط', 'ظ', 'ع', 'غ', 'ف',
-// 	'ق', 'ك', 'ل', 'م', 'ن',
-// 	'و', 'ه', 'ء', 'ي',
-// 	'ى', 'آ', 'ة'
-// ];
-
-const combinations: ArabicCharacter[] = [
-	{e: 'ـا', b: 'ا', i: 'ا'},
-	{e: 'ـب', m: 'ـبـ', b: 'بـ', i: 'ب'},
-	{e: 'ـت', m: 'ـتـ', b: 'تـ', i: 'ت'},
-	{e: 'ـث', m: 'ـثـ', b: 'ثـ', i: 'ث'},
-	{e: 'ـج', m: 'ـجـ', b: 'جـ', i: 'ج'},
-	{e: 'ـح', m: 'ـحـ', b: 'حـ', i: 'ح'},
-	{e: 'ـخ', m: 'ـخـ', b: 'خـ', i: 'خ'},
-	{e: 'ـد', b: 'د', i: 'د'},
-	{e: 'ـذ', b: 'ذ', i: 'ذ'},
-	{e: 'ـر', b: 'ر', i: 'ر'},
-	{e: 'ـز', b: 'ز', i: 'ز'},
+const characters: ArabicCharacter[] = [
+	{e: 'ـا', b: 'ا', i: 'ا', d: true},
+	{e: 'ـب', m: 'ـبـ', b: 'بـ', i: 'ب', d: true},
+	{e: 'ـت', m: 'ـتـ', b: 'تـ', i: 'ت', d: true},
+	{e: 'ـث', m: 'ـثـ', b: 'ثـ', i: 'ث', d: true},
+	{e: 'ـج', m: 'ـجـ', b: 'جـ', i: 'ج', d: true},
+	{e: 'ـح', m: 'ـحـ', b: 'حـ', i: 'ح', d: true},
+	{e: 'ـخ', m: 'ـخـ', b: 'خـ', i: 'خ', d: true},
+	{e: 'ـد', b: 'د', i: 'د', d: true},
+	{e: 'ـذ', b: 'ذ', i: 'ذ', d: true},
+	{e: 'ـر', b: 'ر', i: 'ر', d: true},
+	{e: 'ـز', b: 'ز', i: 'ز', d: true},
 	{e: 'ـس', m: 'ـسـ', b: 'سـ', i: 'س'},
 	{e: 'ـش', m: 'ـشـ', b: 'شـ', i: 'ش'},
 	{e: 'ـص', m: 'ـصـ', b: 'صـ', i: 'ص'},
@@ -52,6 +43,20 @@ const combinations: ArabicCharacter[] = [
 	{e: 'ـة', b: 'ة', i: 'ة'},
 ];
 
+const diacritics = [
+  "َ", // Fathah U+064E
+  "ُ", // Dammah U+064F
+  "ِ", // Kasrah U+0650
+//   "ْ", // Sukun U+0652
+//   "ّ", // Shaddah U+0651
+//   "ٓ", // Maddah U+0653
+//   "ً", // Tanwin Fath U+064B
+//   "ٌ", // Tanwin Damm U+064C
+//   "ٍ", // Tanwin Kasr U+064D
+//   "ٱ", // Hamzat Wasl sign U+0671
+//   "ٰ"  // Superscript Alif U+0670
+];
+
 const phonetic = [
 	'ah-liff', 'bah', 'tah', 't&apos;ha', 'geym/geme',
 	'há (asp.)', 'k&apos;haw (guteral)', 'dá', 'thá', 'rah (roll once)',
@@ -69,7 +74,20 @@ const tatweel = 'ـ';
 
 const app = document.querySelector<HTMLDivElement>('#app')!
 
-const characterForms = combinations.map((c, i) => {
+const characterForms = characters.map((c, i) => {
+	let body = `<tr>${c.e ? `<td><span lang="ar-SA" dir="rtl">${c.e}</span></td>`: ''}
+		${c.m ? `<td><span lang="ar-SA" dir="rtl">${c.m}</span></td>`: ''}
+		${c.b ? `<td><span lang="ar-SA" dir="rtl">${c.b}</span></td>`: ''}
+		${c.i ? `<td><span lang="ar-SA" dir="rtl">${c.i}</span></td>`: ''}</tr>`;
+
+	if(c.d)
+		body += Object.entries(diacritics).map(([,d]) => (
+			`${c.e ? `<tr class="diacritic"><td><span lang="ar-SA" dir="rtl">${c.e}${d}</span></td>`: ''}
+			${c.m ? `<td><span lang="ar-SA" dir="rtl">${c.m}${d}</span></td>`: ''}
+			${c.b ? `<td><span lang="ar-SA" dir="rtl">${c.b}${d}</span></td>`: ''}
+			${c.i ? `<td><span lang="ar-SA" dir="rtl">${c.i}${d}</span></td>`: ''}</tr>`
+		)).join('');
+
 	return `<div>
 	<div class="header">
 	<div><h3>${phonetic[i]}</h3></div>
@@ -82,12 +100,7 @@ const characterForms = combinations.map((c, i) => {
 	${c.b ? `<td>Beginning</td>`: ''}
 	${c.i ? `<td>Isolate</td>`: ''}
 	</thead>
-	<tbody>
-	${c.e ? `<td><span lang="ar-SA" dir="rtl">${c.e}</span></td>`: ''}
-	${c.m ? `<td><span lang="ar-SA" dir="rtl">${c.m}</span></td>`: ''}
-	${c.b ? `<td><span lang="ar-SA" dir="rtl">${c.b}</span></td>`: ''}
-	${c.i ? `<td><span lang="ar-SA" dir="rtl">${c.i}</span></td>`: ''}
-	</tbody>
+	<tbody>${body}</tbody>
 	</table>
 	<!--<pre>
 {e: '${tatweel}${c.i}', m: '${tatweel}${c.i}${tatweel}', b: '${c.i}${tatweel}', i: '${c.i}'},
@@ -96,10 +109,13 @@ const characterForms = combinations.map((c, i) => {
 });
 
 app.innerHTML = `
-<button type="checkbox" id="toggle">Toggle serif</button>
+<button type="checkbox" id="serif">Toggle serif</button>
+<button type="checkbox" id="diacritic">Toggle diacritic</button>
   ${characterForms.join('')}
 `
 
-const buttonStyleToggle = document.getElementById('toggle');
+const toggleSerif = document.getElementById('serif');
+toggleSerif?.addEventListener('click', e => document.getElementsByTagName('body')[0]?.classList.toggle('sansserif'));
 
-buttonStyleToggle?.addEventListener('click', e => document.getElementsByTagName('body')[0]?.classList.toggle('sansserif'));
+const toggleDiacritic = document.getElementById('diacritic');
+toggleDiacritic?.addEventListener('click', e => document.getElementsByTagName('body')[0]?.classList.toggle('diacritic'));

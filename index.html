@@ -25,8 +25,11 @@
 	.button:hover {
 		background-color: #222;
 	}
-	.sansserif {
+	body.sansserif {
 		font-family: sans-serif;
+	}
+	body.diacritic tr.diacritic {
+		display: table-row;
 	}
 	table.char {
 		display: inline-block;
@@ -71,6 +74,9 @@
 	table td {
 		padding: 0 2rem;
 		text-align: center;
+	}
+	tr.diacritic {
+		display: none;
 	}
   </style>
 </head>
